@@ -9,7 +9,7 @@ public class attendanceManagement {
     Stack<Integer> Undo = new Stack<>();
     ArrayList<Integer> displayList = new ArrayList<>();
 
-    // 1.Store student IDs in the order they enter the classroom
+    // Storing student IDs sequencially classroom
     public void studentsEntry(int studentID) {
         if(presentStudent.contains(studentID)) {
             System.out.println("Student " + studentID + " is already present.");
@@ -22,7 +22,7 @@ public class attendanceManagement {
         }
     }
 
-    // 2.Quickly check whether a student is present using their ID.
+    // Checking if a student is present using their ID.
     public boolean isStudentPresent(int studentID) {
         if(presentStudent.contains(studentID)) {
             System.out.println("Student " + studentID + " is present.");
@@ -33,7 +33,7 @@ public class attendanceManagement {
         }
     } 
     
-    // 3.Allow the last marked attendance to be undone. 
+    //Allow the last marked attendance to be undone. 
     public void undoAttendance() {
         if(!Undo.isEmpty()) {
             int lastStudentID = Undo.pop();
@@ -46,7 +46,7 @@ public class attendanceManagement {
         }
     }
 
-    // 4.Display all present students in the order they arrived. 
+    // Display present students sequencially. 
     public void displayAttendance(){
         if(!displayList.isEmpty()) {
             System.out.println("Present students in order of arrival: " + displayList);
@@ -60,7 +60,7 @@ public class attendanceManagement {
         Scanner sc = new Scanner(System.in);
         int choice = 0;
 
-        System.out.println("----------Student Attendance Management System----------");
+        System.out.println("-Student Attendance Management System-");
         while(choice != 5) {
             System.out.println("1. Student Entry");
             System.out.println("2. Check Student Presence");
