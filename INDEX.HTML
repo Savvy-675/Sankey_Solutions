@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Task Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .app {
+            background: #ffffff;
+            width: 95%;
+            max-width: 600px;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .joke {
+            background: #f5f7ff;
+            padding: 12px;
+            border-left: 5px solid #667eea;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-style: italic;
+            color: #444;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.85;
+        }
+
+        .add-btn {
+            background: #667eea;
+            color: #fff;
+        }
+
+        .progress {
+            margin: 15px 0;
+            font-weight: bold;
+            color: #444;
+            text-align: center;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+        }
+
+        .task-text {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: green;
+        }
+
+        .actions button {
+            margin-left: 5px;
+            color: white;
+        }
+
+        .complete-btn { background: #28a745; }
+        .edit-btn { background: #ffc107; color: #000; }
+        .delete-btn { background: #dc3545; }
+
+        @media (max-width: 500px) {
+            .input-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <h1>My Task Manager</h1>
+
+    <div class="joke" id="joke">Loading joke...</div>
+
+    <div class="input-group">
+        <input type="text" id="taskInput" placeholder="Enter a task">
+        <button class="add-btn" onclick="addTask()">Add Task</button>
+    </div>
+
+    <div class="progress" id="progress">Total: 0 | Completed: 0</div>
+
+    <ul id="taskList"></ul>
+</div>
+
+<script>
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+    function saveTasks() {
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    function updateProgress() {
+        const total = tasks.length;
+        const completed = tasks.filter(t => t.completed).length;
+        document.getElementById("progress").textContent =
+            `Total: ${total} | Completed: ${completed}`;
+    }
+
+    function renderTasks() {
+        const list = document.getElementById("taskList");
+        list.innerHTML = "";
+
+        tasks.forEach((task, index) => {
+            const li = document.createElement("li");
+
+            const span = document.createElement("span");
+            span.className = "task-text";
+            span.textContent = task.text;
+            if (task.completed) span.classList.add("completed");
+
+            const actions = document.createElement("div");
+            actions.className = "actions";
+
+            const completeBtn = document.createElement("button");
+            completeBtn.textContent = task.completed ? "Undo" : "Complete";
+            completeBtn.className = "complete-btn";
+            completeBtn.onclick = () => toggleTask(index);
+
+            const editBtn = document.createElement("button");
+            editBtn.textContent = "Edit";
+            editBtn.className = "edit-btn";
+            editBtn.onclick = () => editTask(index);
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "Delete";
+            deleteBtn.className = "delete-btn";
+            deleteBtn.onclick = () => deleteTask(index);
+
+            actions.append(completeBtn, editBtn, deleteBtn);
+            li.append(span, actions);
+            list.appendChild(li);
+        });
+
+        updateProgress();
+    }
+
+    function addTask() {
+        const input = document.getElementById("taskInput");
+        const text = input.value.trim();
+        if (!text) return;
+
+        tasks.push({ text, completed: false });
+        input.value = "";
+        saveTasks();
+        renderTasks();
+    }
+
+    function toggleTask(index) {
+        tasks[index].completed = !tasks[index].completed;
+        saveTasks();
+        renderTasks();
+    }
+
+    function editTask(index) {
+        const newText = prompt("Edit task:", tasks[index].text);
+        if (newText && newText.trim()) {
+            tasks[index].text = newText.trim();
+            saveTasks();
+            renderTasks();
+        }
+    }
+
+    function deleteTask(index) {
+        if (confirm("Delete this task?")) {
+            tasks.splice(index, 1);
+            saveTasks();
+            renderTasks();
+        }
+    }
+
+    async function loadJoke() {
+        try {
+            const res = await fetch("https://api.chucknorris.io/jokes/random");
+            const data = await res.json();
+            document.getElementById("joke").textContent = data.value;
+        } catch {
+            document.getElementById("joke").textContent =
+                "Chuck Norris joke unavailable. Try again later.";
+        }
+    }
+
+    // Initial Load
+    loadJoke();
+    renderTasks();
+</script>
+
+</body>
+</html>
