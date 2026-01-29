@@ -1,0 +1,114 @@
+/* ---------- Base ---------- */
+* {
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+/* ---------- App ---------- */
+.app {
+    width: 95%;
+    max-width: 600px;
+    padding: 25px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+/* ---------- Joke ---------- */
+.joke {
+    margin: 15px 0;
+    padding: 12px;
+    background: #f5f7ff;
+    border-left: 5px solid #667eea;
+    border-radius: 6px;
+    font-style: italic;
+}
+
+/* ---------- Input ---------- */
+.input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+input {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+.add-btn {
+    background: #667eea;
+    color: #fff;
+}
+
+/* ---------- Tasks ---------- */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+}
+
+.task-text.completed {
+    text-decoration: line-through;
+    color: green;
+}
+
+.actions button {
+    margin-left: 5px;
+    color: white;
+}
+
+.complete-btn { background: #28a745; }
+.edit-btn { background: #ffc107; color: #000; }
+.delete-btn { background: #dc3545; }
+
+/* ---------- Progress ---------- */
+.progress {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 500px) {
+    .input-group {
+        flex-direction: column;
+    }
+}
